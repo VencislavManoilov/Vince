@@ -1,3 +1,0 @@
-/home/venci/Documents/Programming/IamBOREDhelpppp/Vince/build/CMakeFiles/Vince.dir
-/home/venci/Documents/Programming/IamBOREDhelpppp/Vince/build/CMakeFiles/edit_cache.dir
-/home/venci/Documents/Programming/IamBOREDhelpppp/Vince/build/CMakeFiles/rebuild_cache.dir

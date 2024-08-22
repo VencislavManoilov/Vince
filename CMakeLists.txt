@@ -7,11 +7,17 @@ project(MyBrowser)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Qt (required modules: core, gui, widgets, and webengine)
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets WebEngineWidgets)
+set(QT_DEBUG_FIND_PACKAGE ON)
+set(CMAKE_FIND_DEBUG_MODE ON)
 
-# Include directories
-include_directories(${Qt5Widgets_INCLUDE_DIRS} ${Qt5WebEngineWidgets_INCLUDE_DIRS})
+# Set Qt6 installation
+set(Qt6_DIR "C:/Qt/6.7.2/msvc2019_64/lib/cmake/Qt6")
+
+# Find Qt6 (required modules: Core, Gui, Widgets, and WebEngineWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets WebEngineWidgets)
+
+# Include directories (Qt6 uses targets, so this is not required unless you have additional include directories)
+include_directories(${Qt6Widgets_INCLUDE_DIRS} ${Qt6WebEngineWidgets_INCLUDE_DIRS})
 
 # Source files
 set(SOURCES
@@ -21,5 +27,9 @@ set(SOURCES
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+set(Qt6_DIR "C:/Qt/6.7.2/msvc2019_64/lib/cmake/Qt6")
+set(Qt6WebEngineWidgets_DIR "C:/Qt/6.7.2/msvc2019_64/lib/cmake/Qt6WebEngineWidgets")
+set(Qt6Quick_DIR "C:/Qt/6.7.2/msvc2019_64/lib/cmake/Qt6Quick")
+
 # Link libraries
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::WebEngineWidgets)
+target_link_libraries(${PROJECT_NAME} Qt6::Core Qt6::Gui Qt6::Widgets Qt6::WebEngineWidgets)

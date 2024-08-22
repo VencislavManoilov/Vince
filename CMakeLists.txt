@@ -1,31 +1,25 @@
 cmake_minimum_required(VERSION 3.10)
 
-# Set the project name
-project(Vince)
+# Project Name
+project(MyBrowser)
 
-# Specify the C++ standard
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Platform-specific configurations
-if(WIN32)
-    set(CEF_ROOT "C:/cef_binary")  # Replace with the path to your CEF binary
-elseif(UNIX AND NOT APPLE)
-    set(CEF_ROOT "/path/to/cef_binary")  # Replace with the path to your CEF binary
-elseif(APPLE)
-    set(CEF_ROOT "/path/to/cef_binary")  # Replace with the path to your CEF binary
-endif()
+# Find Qt (required modules: core, gui, widgets, and webengine)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets WebEngineWidgets)
 
-# Include directories and link libraries for CEF
-include_directories(${CEF_ROOT}/include)
-link_directories(${CEF_ROOT}/Release)
+# Include directories
+include_directories(${Qt5Widgets_INCLUDE_DIRS} ${Qt5WebEngineWidgets_INCLUDE_DIRS})
 
-add_executable(Vince src/main.cpp)
+# Source files
+set(SOURCES
+    src/main.cpp
+)
 
-if(WIN32)
-    target_link_libraries(Vince libcef libcef_dll_wrapper)
-elseif(UNIX)
-    target_link_libraries(Vince ${CEF_ROOT}/Release/libcef.so)
-elseif(APPLE)
-    target_link_libraries(Vince ${CEF_ROOT}/Release/libcef.dylib)
-endif()
+# Add executable
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Link libraries
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::WebEngineWidgets)

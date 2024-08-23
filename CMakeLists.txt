@@ -7,32 +7,26 @@ project(Vince)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Path to Qt installation
-set(Qt_INSTALL_DIR "${CMAKE_SOURCE_DIR}/libs")
+# Set the path to find Qt6
+set(CMAKE_PREFIX_PATH "C:/Qt/6.7.2/msvc2019_64")
 
-# Set Qt directories manually (assuming headers are in 'include')
-set(Qt6_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
-
-# Include directories
-include_directories(${Qt6_INCLUDE_DIR})
+# Find Qt6 packages
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
 
 # Add the executable
 add_executable(Vince src/main.cpp)
 
-# Link libraries
-target_link_libraries(Vince
-    ${Qt_INSTALL_DIR}/Qt6Core.lib
-    ${Qt_INSTALL_DIR}/Qt6Gui.lib
-    ${Qt_INSTALL_DIR}/Qt6Widgets.lib
-    ${Qt_INSTALL_DIR}/Qt6WebEngineWidgets.lib
-)
+# Link the Qt libraries
+target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui)
 
-# Add the Qt DLLs to the output directory
+# Add Qt include directories
+target_include_directories(Vince PRIVATE ${Qt6_INCLUDE_DIRS})
+
+# Copy Qt DLLs to the output directory
 add_custom_command(TARGET Vince POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${Qt_INSTALL_DIR}/Qt6Core.dll
-    ${Qt_INSTALL_DIR}/Qt6Gui.dll
-    ${Qt_INSTALL_DIR}/Qt6Widgets.dll
-    ${Qt_INSTALL_DIR}/Qt6WebEngineWidgets.dll
+    $<TARGET_FILE:Qt6::Core>
+    $<TARGET_FILE:Qt6::Widgets>
+    $<TARGET_FILE:Qt6::Gui>
     $<TARGET_FILE_DIR:Vince>
 )

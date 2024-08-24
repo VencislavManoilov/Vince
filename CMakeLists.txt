@@ -36,12 +36,13 @@ add_custom_command(TARGET Vince POST_BUILD
     $<TARGET_FILE_DIR:Vince>
 )
 
-# If deploying on Windows, copy Qt plugins and dependencies
+# Deploy the application using windeployqt (Windows only)
 if (WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if (WINDEPLOYQT_EXECUTABLE)
         add_custom_command(TARGET Vince POST_BUILD
-            COMMAND "${WINDEPLOYQT_EXECUTABLE}" --no-quick --no-svg --no-system-d3d-compiler --no-angle "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>"
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}" "$<TARGET_FILE:Vince>"
+            COMMENT "Running windeployqt..."
         )
     endif()
 endif()

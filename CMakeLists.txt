@@ -11,13 +11,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_PREFIX_PATH "C:/Qt/6.7.2/msvc2019_64")
 
 # Find Qt6 packages
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui WebEngineWidgets)
 
 # Add the executable
 add_executable(Vince src/main.cpp)
 
 # Link the Qt libraries
-target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui)
+target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui Qt6::WebEngineWidgets)
 
 # Add Qt include directories
 target_include_directories(Vince PRIVATE ${Qt6_INCLUDE_DIRS})
@@ -33,6 +33,8 @@ add_custom_command(TARGET Vince POST_BUILD
     $<TARGET_FILE:Qt6::Core>
     $<TARGET_FILE:Qt6::Widgets>
     $<TARGET_FILE:Qt6::Gui>
+    $<TARGET_FILE:Qt6::WebEngineCore>
+    $<TARGET_FILE:Qt6::WebEngineWidgets>
     $<TARGET_FILE_DIR:Vince>
 )
 

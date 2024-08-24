@@ -22,7 +22,12 @@ target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui)
 # Add Qt include directories
 target_include_directories(Vince PRIVATE ${Qt6_INCLUDE_DIRS})
 
-# Copy Qt DLLs to the output directory
+# Handle Qt's automatic MOC, UIC, and RCC handling (if needed)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+# Copy necessary Qt DLLs to the output directory
 add_custom_command(TARGET Vince POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     $<TARGET_FILE:Qt6::Core>
@@ -30,3 +35,13 @@ add_custom_command(TARGET Vince POST_BUILD
     $<TARGET_FILE:Qt6::Gui>
     $<TARGET_FILE_DIR:Vince>
 )
+
+# If deploying on Windows, copy Qt plugins and dependencies
+if (WIN32)
+    find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
+    if (WINDEPLOYQT_EXECUTABLE)
+        add_custom_command(TARGET Vince POST_BUILD
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}" --no-quick --no-svg --no-system-d3d-compiler --no-angle "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>"
+        )
+    endif()
+endif()

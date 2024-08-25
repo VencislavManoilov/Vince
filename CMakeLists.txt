@@ -16,7 +16,7 @@ endif()
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui WebEngineWidgets)
 
 # Add the executable
-add_executable(Vince src/main.cpp)
+add_executable(Vince src/main.cpp "src/webview.cpp")
 
 # Link the Qt libraries
 target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui Qt6::WebEngineWidgets)

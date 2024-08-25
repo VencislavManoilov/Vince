@@ -15,19 +15,18 @@ endif()
 # Find Qt6 packages
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui WebEngineWidgets)
 
-# Add the executable
-add_executable(Vince src/main.cpp "src/webview.cpp")
-
-# Link the Qt libraries
-target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui Qt6::WebEngineWidgets)
-
 # Handle Qt's automatic MOC, UIC, and RCC handling (if needed)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# Handle platform-specific deployment (as before)
+# Add the executable
+add_executable(Vince src/main.cpp src/webview.cpp)
 
+# Link the Qt libraries
+target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui Qt6::WebEngineWidgets)
+
+# Handle platform-specific deployment
 if (WIN32)
     # Windows specific deployment with windeployqt
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")

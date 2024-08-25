@@ -2,31 +2,85 @@
 #include <QMainWindow>
 #include <QLineEdit>
 #include <QToolBar>
+#include <QTabWidget>
+#include <QWebEngineView>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "webview.h"
+
+class BrowserWindow : public QMainWindow {
+    Q_OBJECT
+
+public:
+    BrowserWindow() {
+        setWindowTitle("Tabbed Browser");
+        resize(1024, 768);
+
+        // Create the toolbar with a search bar and buttons
+        QToolBar* toolbar = new QToolBar(this);
+        QLineEdit* searchBar = new QLineEdit(toolbar);
+        QPushButton* newTabButton = new QPushButton("+", toolbar);
+        QPushButton* closeTabButton = new QPushButton("-", toolbar);
+
+        toolbar->addWidget(newTabButton);
+        toolbar->addWidget(closeTabButton);
+        toolbar->addWidget(searchBar);
+        addToolBar(toolbar);
+
+        // Create the tab widget
+        tabWidget = new QTabWidget(this);
+        setCentralWidget(tabWidget);
+
+        // Connect the toolbar buttons
+        connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
+        connect(closeTabButton, &QPushButton::clicked, this, &BrowserWindow::closeCurrentTab);
+        connect(searchBar, &QLineEdit::returnPressed, this, &BrowserWindow::navigateToUrl);
+
+        // Add the initial tab
+        addNewTab();
+    }
+
+private slots:
+    void addNewTab() {
+        QWebEngineView* view = createWebView(this);
+        tabWidget->addTab(view, "New Tab");
+        tabWidget->setCurrentWidget(view);
+
+        // Update tab title when the page title changes
+        connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
+            tabWidget->setTabText(tabWidget->indexOf(view), title);
+            });
+    }
+
+    void closeCurrentTab() {
+        if (tabWidget->count() > 1) {
+            tabWidget->removeTab(tabWidget->currentIndex());
+        }
+    }
+
+    void navigateToUrl() {
+        QLineEdit* searchBar = findChild<QLineEdit*>();
+        if (searchBar && tabWidget->currentWidget()) {
+            QWebEngineView* view = qobject_cast<QWebEngineView*>(tabWidget->currentWidget());
+            if (view) {
+                view->setUrl(QUrl(searchBar->text()));
+            }
+        }
+    }
+
+private:
+    QTabWidget* tabWidget;
+};
+
+// Include the generated MOC file
+#include "main.moc"
 
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
-    QMainWindow window;
-    window.resize(1024, 768);
-
-    // Create the toolbar with a search bar
-    QToolBar* toolbar = new QToolBar(&window);
-    QLineEdit* searchBar = new QLineEdit(toolbar);
-    toolbar->addWidget(searchBar);
-    window.addToolBar(toolbar);
-
-    // Create the web view using the function from webview.cpp
-    QWebEngineView* view = createWebView(&window);
-    window.setCentralWidget(view);
-
+    BrowserWindow window;
     window.show();
-
-    // Connect search bar to navigate to the URL entered
-    QObject::connect(searchBar, &QLineEdit::returnPressed, [&]() {
-        view->setUrl(QUrl(searchBar->text()));
-    });
 
     return app.exec();
 }

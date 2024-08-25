@@ -76,3 +76,8 @@
     cmake --build . --config Release
 4. Run the Application:
     - After building, you can find the executable in the `./build/Release` directory.
+  
+### Key Points:
+- **Environment Variables**: The instructions guide users on how to set the `CMAKE_PREFIX_PATH` environment variable, making the build process adaptable to different Qt installation paths.
+- **Cross-Platform**: The `CMakeLists.txt` file is written to support Windows, Linux, and macOS, with specific deployment steps where needed.
+- **User Instructions**: Clear steps are provided for each operating system to install dependencies, build the project, and run the application.

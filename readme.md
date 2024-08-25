@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Vince** is a C++ application that uses the Qt6 framework. This document provides setup and installation instructions for Windows, Linux, and macOS.
+**Vince** is a C++ Browser that uses the Qt6 framework. This document provides setup and installation instructions for Windows, Linux, and macOS.
 
 ## Prerequisites
 

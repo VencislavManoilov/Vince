@@ -7,8 +7,10 @@ project(Vince LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Set the path to find Qt6
-set(CMAKE_PREFIX_PATH "C:/Qt/6.7.2/msvc2019_64" CACHE PATH "Path to Qt6 installation")
+# Allow users to set their own CMAKE_PREFIX_PATH or rely on CMake's defaults
+if(NOT DEFINED CMAKE_PREFIX_PATH)
+    message(STATUS "CMAKE_PREFIX_PATH is not set. CMake will try to find Qt6 in default locations.")
+endif()
 
 # Find Qt6 packages
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui WebEngineWidgets)
@@ -24,10 +26,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# Handle platform-specific deployment
+# Handle platform-specific deployment (as before)
 
 if (WIN32)
-    # Deploy the application using windeployqt (Windows only)
+    # Windows specific deployment with windeployqt
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if (WINDEPLOYQT_EXECUTABLE)
         add_custom_command(TARGET Vince POST_BUILD
@@ -37,12 +39,9 @@ if (WIN32)
     endif()
 
 elseif (APPLE)
-    # macOS specific settings
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui WebEngineWidgets)
+    # macOS specific deployment with macdeployqt
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks")
-
-    # Use macdeployqt for macOS deployment
     find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if (MACDEPLOYQT_EXECUTABLE)
         add_custom_command(TARGET Vince POST_BUILD
@@ -53,7 +52,6 @@ elseif (APPLE)
 
 elseif (UNIX)
     # Linux specific settings
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui WebEngineWidgets)
     # No specific deployment step; usually handled by packaging systems like `dpkg` or `rpm`
 endif()
 

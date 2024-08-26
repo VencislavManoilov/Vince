@@ -31,6 +31,7 @@ public:
 
         // Create the tab widget
         tabWidget = new QTabWidget(this);
+        tabWidget->setMovable(true);
         setCentralWidget(tabWidget);
 
         // Connect the toolbar buttons

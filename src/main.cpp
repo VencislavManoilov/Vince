@@ -7,6 +7,10 @@
 #include <QWebEngineView>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QAction>
+#include <QShortcut>
+#include <QKeySequence>
+#include <QMenuBar>
 #include "webview.h"
 #include <regex>
 
@@ -42,6 +46,20 @@ public:
         // Connect the toolbar buttons
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
         connect(searchBar, &QLineEdit::returnPressed, this, &BrowserWindow::navigateToUrl);
+
+	// Shortcuts
+        QAction* newTabAction = new QAction(tr("New Tab"), this);
+        newTabAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_T));
+        connect(newTabAction, &QAction::triggered, this, &BrowserWindow::addNewTab);
+
+        QAction* closeTabAction = new QAction(tr("Close Tab"), this);
+        closeTabAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+        connect(closeTabAction, &QAction::triggered, this, &BrowserWindow::closeCurrentTab);
+
+        // Add actions to the menu bar
+        QMenu* fileMenu = menuBar()->addMenu(tr("File"));
+        fileMenu->addAction(newTabAction);
+        fileMenu->addAction(closeTabAction);
 
         // Add the initial tab
         addNewTab();

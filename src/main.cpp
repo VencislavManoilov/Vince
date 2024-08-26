@@ -1,3 +1,4 @@
+#include <iostream>
 #include <QApplication>
 #include <QMainWindow>
 #include <QLineEdit>
@@ -7,13 +8,14 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "webview.h"
+#include <regex>
 
 class BrowserWindow : public QMainWindow {
     Q_OBJECT
 
 public:
     BrowserWindow() {
-        setWindowTitle("Tabbed Browser");
+        setWindowTitle("Vince Browser");
         resize(1024, 768);
 
         // Create the toolbar with a search bar and buttons
@@ -63,7 +65,22 @@ private slots:
         if (searchBar && tabWidget->currentWidget()) {
             QWebEngineView* view = qobject_cast<QWebEngineView*>(tabWidget->currentWidget());
             if (view) {
-                view->setUrl(QUrl(searchBar->text()));
+                std::string searchText = searchBar->text().toStdString();
+
+                // Check if searchText is a URL
+                std::regex urlRegex("(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?");
+                if (std::regex_match(searchText, urlRegex)) {
+                    // If the URL does not have a scheme, prepend "https://"
+                    if (searchText.find("http://") != 0 && searchText.find("https://") != 0) {
+                        searchText = "https://" + searchText;
+                    }
+                }
+                else {
+                    // If not a URL, treat it as a search query (example with Google)
+                    searchText = "https://www.google.com/search?q=" + QUrl::toPercentEncoding(QString::fromStdString(searchText)).toStdString();
+                }
+
+                view->setUrl(QUrl(QString::fromStdString(searchText)));
             }
         }
     }

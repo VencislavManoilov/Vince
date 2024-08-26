@@ -21,7 +21,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 # Add the executable
-add_executable(Vince src/main.cpp src/webview.cpp)
+add_executable(Vince src/main.cpp src/webview.cpp src/ShortcutsManager.cpp)
 
 # Link the Qt libraries
 target_link_libraries(Vince PRIVATE Qt6::Core Qt6::Widgets Qt6::Gui Qt6::WebEngineWidgets)

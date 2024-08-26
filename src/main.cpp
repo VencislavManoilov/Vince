@@ -12,6 +12,7 @@
 #include <QKeySequence>
 #include <QMenuBar>
 #include "webview.h"
+#include "ShortcutsManager.h"
 #include <regex>
 
 class BrowserWindow : public QMainWindow {
@@ -47,25 +48,10 @@ public:
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
         connect(searchBar, &QLineEdit::returnPressed, this, &BrowserWindow::navigateToUrl);
 
-	// Shortcuts
-        QAction* newTabAction = new QAction(tr("New Tab"), this);
-        newTabAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_T));
-        connect(newTabAction, &QAction::triggered, this, &BrowserWindow::addNewTab);
-
-        QAction* closeTabAction = new QAction(tr("Close Tab"), this);
-        closeTabAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
-        connect(closeTabAction, &QAction::triggered, this, &BrowserWindow::closeCurrentTab);
-
-        // Add actions to the menu bar
-        QMenu* fileMenu = menuBar()->addMenu(tr("File"));
-        fileMenu->addAction(newTabAction);
-        fileMenu->addAction(closeTabAction);
-
         // Add the initial tab
         addNewTab();
     }
 
-private slots:
     void addNewTab() {
         QWebEngineView* view = createWebView(this);
         tabWidget->addTab(view, "New Tab");
@@ -74,7 +60,7 @@ private slots:
         // Update tab title when the page title changes
         connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
             tabWidget->setTabText(tabWidget->indexOf(view), title);
-            });
+        });
     }
 
     void closeCurrentTab() {
@@ -84,7 +70,8 @@ private slots:
             this->close();
         }
     }
-
+    
+private slots:
     void navigateToUrl() {
         QLineEdit* searchBar = findChild<QLineEdit*>();
         if (searchBar && tabWidget->currentWidget()) {
@@ -123,6 +110,10 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     BrowserWindow window;
+    // Create the ShortcutsManager and pass the BrowserWindow's functions
+    ShortcutsManager shortcutsManager(&window, 
+                                      [&window]() { window.addNewTab(); }, 
+                                      [&window]() { window.closeCurrentTab(); });
     window.show();
 
     return app.exec();

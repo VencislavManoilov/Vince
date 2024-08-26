@@ -51,7 +51,7 @@ private slots:
         // Update tab title when the page title changes
         connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
             tabWidget->setTabText(tabWidget->indexOf(view), title);
-            });
+        });
     }
 
     void closeCurrentTab() {
@@ -79,6 +79,8 @@ private slots:
                     // If not a URL, treat it as a search query (example with Google)
                     searchText = "https://www.google.com/search?q=" + QUrl::toPercentEncoding(QString::fromStdString(searchText)).toStdString();
                 }
+
+                searchBar->setText(QString::fromStdString(searchText));
 
                 view->setUrl(QUrl(QString::fromStdString(searchText)));
             }

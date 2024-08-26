@@ -57,6 +57,8 @@ private slots:
     void closeCurrentTab() {
         if (tabWidget->count() > 1) {
             tabWidget->removeTab(tabWidget->currentIndex());
+        } else {
+            this->close();
         }
     }
 
@@ -74,8 +76,7 @@ private slots:
                     if (searchText.find("http://") != 0 && searchText.find("https://") != 0) {
                         searchText = "https://" + searchText;
                     }
-                }
-                else {
+                } else {
                     // If not a URL, treat it as a search query (example with Google)
                     searchText = "https://www.google.com/search?q=" + QUrl::toPercentEncoding(QString::fromStdString(searchText)).toStdString();
                 }

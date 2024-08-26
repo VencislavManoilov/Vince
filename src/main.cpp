@@ -21,26 +21,26 @@ public:
         // Create the toolbar with a search bar and buttons
         QToolBar* toolbar = new QToolBar(this);
         QLineEdit* searchBar = new QLineEdit(toolbar);
-        QPushButton* newTabButton = new QPushButton("+", toolbar);
-        QPushButton* closeTabButton = new QPushButton("-", toolbar);
 
-        toolbar->addWidget(newTabButton);
-        toolbar->addWidget(closeTabButton);
         toolbar->addWidget(searchBar);
         addToolBar(toolbar);
 
         // Create the tab widget
         tabWidget = new QTabWidget(this);
         tabWidget->setMovable(true);
-
         tabWidget->setTabsClosable(true);
         connect(tabWidget, &QTabWidget::tabCloseRequested, this, &BrowserWindow::closeCurrentTab);
-        
+
+        // Create the new tab button
+        QPushButton* newTabButton = new QPushButton("+", this);
+
+        // Add the new tab button to the right corner of the tab bar
+        tabWidget->setCornerWidget(newTabButton, Qt::TopRightCorner);
+
         setCentralWidget(tabWidget);
 
         // Connect the toolbar buttons
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
-        connect(closeTabButton, &QPushButton::clicked, this, &BrowserWindow::closeCurrentTab);
         connect(searchBar, &QLineEdit::returnPressed, this, &BrowserWindow::navigateToUrl);
 
         // Add the initial tab
@@ -56,7 +56,7 @@ private slots:
         // Update tab title when the page title changes
         connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
             tabWidget->setTabText(tabWidget->indexOf(view), title);
-        });
+            });
     }
 
     void closeCurrentTab() {

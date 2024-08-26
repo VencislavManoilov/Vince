@@ -75,8 +75,8 @@ private slots:
                 std::string searchText = searchBar->text().toStdString();
 
                 // Check if searchText is a URL
-                std::regex urlRegex("(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?");
-                if (std::regex_match(searchText, urlRegex)) {
+                std::regex urlRegex(R"(^(https?://)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(/[\w\-\.~:/?#[\]@!$&'()*+,;=]*)?$)");
+		if (std::regex_match(searchText, urlRegex)) {
                     // If the URL does not have a scheme, prepend "https://"
                     if (searchText.find("http://") != 0 && searchText.find("https://") != 0) {
                         searchText = "https://" + searchText;

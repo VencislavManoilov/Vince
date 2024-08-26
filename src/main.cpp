@@ -32,6 +32,10 @@ public:
         // Create the tab widget
         tabWidget = new QTabWidget(this);
         tabWidget->setMovable(true);
+
+        tabWidget->setTabsClosable(true);
+        connect(tabWidget, &QTabWidget::tabCloseRequested, this, &BrowserWindow::closeCurrentTab);
+        
         setCentralWidget(tabWidget);
 
         // Connect the toolbar buttons

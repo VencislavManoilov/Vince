@@ -13,6 +13,10 @@ ShortcutsManager::ShortcutsManager(QMainWindow* parent, std::function<void()> ad
     closeTabAction = new QAction(tr("Close Tab"), parent);
     closeTabAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
     connect(closeTabAction, &QAction::triggered, this, &ShortcutsManager::onCloseCurrentTab);
+
+    // Add actions to the main window's actions list, but do not add to any menu
+    parent->addAction(newTabAction);
+    parent->addAction(closeTabAction);
 }
 
 void ShortcutsManager::onAddNewTab() {

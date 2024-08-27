@@ -67,7 +67,9 @@ public:
 
         // Connect the search bar to navigate the web view when Enter is pressed
         connect(searchBar, &QLineEdit::returnPressed, [=]() {
-            view->setUrl(QUrl(searchBar->text()));
+            QUrl url = UrlRefactor(searchBar->text().toStdString());
+            searchBar->setText(url.toString());
+            view->setUrl(url);
         });
 
         // Update tab title when the page title changes
@@ -79,36 +81,30 @@ public:
     void closeCurrentTab() {
         if (tabWidget->count() > 1) {
             tabWidget->removeTab(tabWidget->currentIndex());
-        } else {
+        }
+        else {
             this->close();
         }
     }
-    
+
 private slots:
-    void navigateToUrl() {
-        QLineEdit* searchBar = findChild<QLineEdit*>();
-        if (searchBar && tabWidget->currentWidget()) {
-            QWebEngineView* view = qobject_cast<QWebEngineView*>(tabWidget->currentWidget());
-            if (view) {
-                std::string searchText = searchBar->text().toStdString();
+    QUrl UrlRefactor(std::string url) {
+        std::string searchText = url;
 
-                // Check if searchText is a URL
-                std::regex urlRegex(R"(^(https?://)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(/[\w\-\.~:/?#[\]@!$&'()*+,;=]*)?$)");
-		        if (std::regex_match(searchText, urlRegex)) {
-                    // If the URL does not have a scheme, prepend "https://"
-                    if (searchText.find("http://") != 0 && searchText.find("https://") != 0) {
-                        searchText = "https://" + searchText;
-                    }
-                } else {
-                    // If not a URL, treat it as a search query (example with Google)
-                    searchText = "https://www.google.com/search?q=" + QUrl::toPercentEncoding(QString::fromStdString(searchText)).toStdString();
-                }
-
-                searchBar->setText(QString::fromStdString(searchText));
-
-                view->setUrl(QUrl(QString::fromStdString(searchText)));
+        // Check if searchText is a URL
+        std::regex urlRegex(R"(^(https?://)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(/[\w\-\.~:/?#[\]@!$&'()*+,;=]*)?$)");
+        if (std::regex_match(searchText, urlRegex)) {
+            // If the URL does not have a scheme, prepend "https://"
+            if (searchText.find("http://") != 0 && searchText.find("https://") != 0) {
+                searchText = "https://" + searchText;
             }
         }
+        else {
+            // If not a URL, treat it as a search query (example with Google)
+            searchText = "https://www.google.com/search?q=" + QUrl::toPercentEncoding(QString::fromStdString(searchText)).toStdString();
+        }
+
+        return QString::fromStdString(searchText);
     }
 
 private:

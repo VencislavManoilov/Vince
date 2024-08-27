@@ -48,6 +48,9 @@ public:
         QWidget* tab = new QWidget;
         QVBoxLayout* layout = new QVBoxLayout(tab);
 
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+
         // Create the search bar specific to this tab
         QLineEdit* searchBar = new QLineEdit(tab);
 
@@ -81,6 +84,9 @@ public:
         connect(view, &QWebEngineView::urlChanged, this, [=](const QUrl& url) {
             searchBar->setText(url.toString());
         });
+
+        tabWidget->setStyleSheet("QTabWidget::pane { margin: 0px; padding: 0px; border: 0px; }");
+        tabWidget->setContentsMargins(0, 0, 0, 0);
     }
 
     void closeCurrentTab() {

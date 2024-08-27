@@ -58,7 +58,7 @@
     - After building, you can find the executable in the `./build` directory.
 
 ### Linux
-1. Install Qt6:
+1. **Install Qt6:**
     - Depending on your distribution, you might be able to install Qt6 from your package manager. For example:
       ```bash
       sudo apt-get install qt6-base-dev qt6-webengine-dev
@@ -74,7 +74,7 @@
     cd build
     cmake ..
     cmake --build . --config Release
-4. Run the Application:
+4. **Run the Application:**
     - After building, you can find the executable in the `./build` directory.
   
 ### Key Points:

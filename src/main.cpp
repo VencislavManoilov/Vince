@@ -83,6 +83,7 @@ public:
         QVBoxLayout* centralLayout = new QVBoxLayout(centralWidget);
         centralLayout->addWidget(tabWidget);
         centralLayout->setContentsMargins(0, 0, 0, 0);
+
         setCentralWidget(centralWidget);
     }
 
@@ -91,6 +92,7 @@ public:
         QWidget* tab = new QWidget;
         QVBoxLayout* layout = new QVBoxLayout(tab);
 
+        // Ensure no margins or spacing
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
 
@@ -114,17 +116,17 @@ public:
             searchBar->setText(url.toString());
             view->setUrl(url);
             view->setFocus();
-        });
+            });
 
         // Update tab title when the page title changes
         connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
             tabWidget->setTabText(tabWidget->indexOf(tab), title);
-        });
+            });
 
-        // Update url when the page url changes
+        // Update URL when the page URL changes
         connect(view, &QWebEngineView::urlChanged, this, [=](const QUrl& url) {
             searchBar->setText(url.toString());
-        });
+            });
 
         // Removes extra padding from tab
         tabWidget->setStyleSheet("QTabWidget::pane { margin: 0px; padding: 0px; border: 0px; }");

@@ -13,10 +13,6 @@ ShortcutsManager::ShortcutsManager(QMainWindow* parent, std::function<void()> ad
     closeTabAction = new QAction(tr("Close Tab"), parent);
     closeTabAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
     connect(closeTabAction, &QAction::triggered, this, &ShortcutsManager::onCloseCurrentTab);
-
-    QMenu* fileMenu = parent->menuBar()->addMenu(tr("File"));
-    fileMenu->addAction(newTabAction);
-    fileMenu->addAction(closeTabAction);
 }
 
 void ShortcutsManager::onAddNewTab() {

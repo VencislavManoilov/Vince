@@ -77,6 +77,10 @@ public:
         connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
             tabWidget->setTabText(tabWidget->indexOf(tab), title);
         });
+
+        connect(view, &QWebEngineView::urlChanged, this, [=](const QUrl& url) {
+            searchBar->setText(url.toString());
+        });
     }
 
     void closeCurrentTab() {

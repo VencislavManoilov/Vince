@@ -70,6 +70,7 @@ public:
             QUrl url = UrlRefactor(searchBar->text().toStdString());
             searchBar->setText(url.toString());
             view->setUrl(url);
+            view->setFocus();
         });
 
         // Update tab title when the page title changes

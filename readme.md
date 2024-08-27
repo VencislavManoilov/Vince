@@ -55,7 +55,7 @@
     cmake --build . --config Release
     ```
 4. **Run the Application:**
-    - After building, you can find the executable in the `./build/Release` directory.
+    - After building, you can find the executable in the `./build` directory.
 
 ### Linux
 1. Install Qt6:
@@ -75,7 +75,7 @@
     cmake ..
     cmake --build . --config Release
 4. Run the Application:
-    - After building, you can find the executable in the `./build/Release` directory.
+    - After building, you can find the executable in the `./build` directory.
   
 ### Key Points:
 - **Environment Variables**: The instructions guide users on how to set the `CMAKE_PREFIX_PATH` environment variable, making the build process adaptable to different Qt installation paths.

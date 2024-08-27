@@ -2,7 +2,6 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QLineEdit>
-#include <QToolBar>
 #include <QTabWidget>
 #include <QWebEngineView>
 #include <QPushButton>
@@ -23,13 +22,6 @@ public:
         setWindowTitle("Vince Browser");
         resize(1024, 768);
 
-        // Create the toolbar with a search bar and buttons
-        QToolBar* toolbar = new QToolBar(this);
-        QLineEdit* searchBar = new QLineEdit(toolbar);
-
-        toolbar->addWidget(searchBar);
-        addToolBar(toolbar);
-
         // Create the tab widget
         tabWidget = new QTabWidget(this);
         tabWidget->setMovable(true);
@@ -46,20 +38,41 @@ public:
 
         // Connect the toolbar buttons
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
-        connect(searchBar, &QLineEdit::returnPressed, this, &BrowserWindow::navigateToUrl);
 
         // Add the initial tab
         addNewTab();
     }
 
     void addNewTab() {
+        // Create a new widget to hold both the search bar and the web view
+        QWidget* tab = new QWidget;
+        QVBoxLayout* layout = new QVBoxLayout(tab);
+
+        // Create the search bar specific to this tab
+        QLineEdit* searchBar = new QLineEdit(tab);
+
+        // Create the web view specific to this tab
         QWebEngineView* view = createWebView(this);
-        tabWidget->addTab(view, "New Tab");
-        tabWidget->setCurrentWidget(view);
+
+        // Add the search bar and the web view to the layout
+        layout->addWidget(searchBar);
+        layout->addWidget(view);
+
+        // Set the layout for the tab widget
+        tab->setLayout(layout);
+
+        // Add the new tab with the composite widget (search bar + web view)
+        tabWidget->addTab(tab, "New Tab");
+        tabWidget->setCurrentWidget(tab);
+
+        // Connect the search bar to navigate the web view when Enter is pressed
+        connect(searchBar, &QLineEdit::returnPressed, [=]() {
+            view->setUrl(QUrl(searchBar->text()));
+        });
 
         // Update tab title when the page title changes
         connect(view, &QWebEngineView::titleChanged, this, [=](const QString& title) {
-            tabWidget->setTabText(tabWidget->indexOf(view), title);
+            tabWidget->setTabText(tabWidget->indexOf(tab), title);
         });
     }
 
@@ -81,7 +94,7 @@ private slots:
 
                 // Check if searchText is a URL
                 std::regex urlRegex(R"(^(https?://)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(/[\w\-\.~:/?#[\]@!$&'()*+,;=]*)?$)");
-		if (std::regex_match(searchText, urlRegex)) {
+		        if (std::regex_match(searchText, urlRegex)) {
                     // If the URL does not have a scheme, prepend "https://"
                     if (searchText.find("http://") != 0 && searchText.find("https://") != 0) {
                         searchText = "https://" + searchText;

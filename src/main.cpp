@@ -35,6 +35,9 @@ public:
         tabWidget->setElideMode(Qt::ElideRight); // To handle long tab titles
         connect(tabWidget, &QTabWidget::tabCloseRequested, this, &BrowserWindow::closeCurrentTab);
 
+        // Extract the tab bar from the QTabWidget
+        QTabBar* tabBar = tabWidget->tabBar();
+
         // Create window control buttons
         QPushButton* minimizeButton = new QPushButton("-", this);
         QPushButton* maximizeButton = new QPushButton("□", this);
@@ -48,22 +51,20 @@ public:
         connect(maximizeButton, &QPushButton::clicked, this, &BrowserWindow::toggleMaximized);
         connect(closeButton, &QPushButton::clicked, this, &BrowserWindow::close);
 
-        // Add the new tab button to the right side of the tab bar
+        // Create the new tab button
         QPushButton* newTabButton = new QPushButton("+", this);
         newTabButton->setFixedSize(23, 23);
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
 
         // Layout for the tab bar and controls
         QHBoxLayout* titleBarLayout = new QHBoxLayout();
-        titleBarLayout->addWidget(tabWidget);
-        titleBarLayout->addWidget(newTabButton);
 
-        // Adding stretch to ensure buttons stay on the right
-        titleBarLayout->addStretch(1);
-
-        titleBarLayout->addWidget(minimizeButton);
-        titleBarLayout->addWidget(maximizeButton);
-        titleBarLayout->addWidget(closeButton);
+        titleBarLayout->addWidget(tabBar);             // Add the tab bar
+        titleBarLayout->addStretch(1);                 // Add stretch to push buttons to the right
+        titleBarLayout->addWidget(newTabButton);       // Add the "New Tab" button
+        titleBarLayout->addWidget(minimizeButton);     // Add the minimize button
+        titleBarLayout->addWidget(maximizeButton);     // Add the maximize button
+        titleBarLayout->addWidget(closeButton);        // Add the close button
         titleBarLayout->setSpacing(0);
         titleBarLayout->setContentsMargins(0, 0, 0, 0);
 

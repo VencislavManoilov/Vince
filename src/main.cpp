@@ -49,29 +49,21 @@ public:
         connect(closeButton, &QPushButton::clicked, this, &BrowserWindow::close);
 
         // Add the new tab button to the right side of the tab bar
-        QWidget* cornerWidget = new QWidget(this);
-        QHBoxLayout* cornerLayout = new QHBoxLayout(cornerWidget);
         QPushButton* newTabButton = new QPushButton("+", this);
         newTabButton->setFixedSize(23, 23);
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
-        cornerLayout->addWidget(newTabButton);
-        cornerLayout->setContentsMargins(0, 0, 0, 0);
-        tabWidget->setCornerWidget(cornerWidget, Qt::TopRightCorner);
-
-        // Layout for window controls
-        QHBoxLayout* windowControlLayout = new QHBoxLayout();
-        windowControlLayout->addWidget(minimizeButton);
-        windowControlLayout->addWidget(maximizeButton);
-        windowControlLayout->addWidget(closeButton);
-        windowControlLayout->setContentsMargins(0, 0, 0, 0);
-
-        // Ensure the tab bar takes up most of the space
-        windowControlLayout->addStretch();
 
         // Layout for the tab bar and controls
         QHBoxLayout* titleBarLayout = new QHBoxLayout();
         titleBarLayout->addWidget(tabWidget);
-        titleBarLayout->addLayout(windowControlLayout);
+        titleBarLayout->addWidget(newTabButton);
+
+        // Adding stretch to ensure buttons stay on the right
+        titleBarLayout->addStretch(1);
+
+        titleBarLayout->addWidget(minimizeButton);
+        titleBarLayout->addWidget(maximizeButton);
+        titleBarLayout->addWidget(closeButton);
         titleBarLayout->setSpacing(0);
         titleBarLayout->setContentsMargins(0, 0, 0, 0);
 

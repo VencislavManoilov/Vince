@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <QApplication>
 #include <QMainWindow>
 #include <QLineEdit>
@@ -11,6 +11,8 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QMenuBar>
+#include <QStyleOption>
+#include <QPainter>
 #include "webview.h"
 #include "ShortcutsManager.h"
 #include <regex>
@@ -23,6 +25,9 @@ public:
         setWindowTitle("Vince Browser");
         resize(1024, 768);
 
+        // Disable the window frame to create a custom title bar
+        setWindowFlags(Qt::FramelessWindowHint);
+
         // Create the tab widget
         tabWidget = new QTabWidget(this);
         tabWidget->setMovable(true);
@@ -31,11 +36,43 @@ public:
 
         // Create the new tab button
         QPushButton* newTabButton = new QPushButton("+", this);
+        newTabButton->setFixedSize(23, 23);
         connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
 
-        // Add the new tab button to the right corner of the tab bar
-        tabWidget->setCornerWidget(newTabButton, Qt::TopRightCorner);
+        // Create window control buttons
+        QPushButton* minimizeButton = new QPushButton("-", this);
+        QPushButton* maximizeButton = new QPushButton("□", this);
+        QPushButton* closeButton = new QPushButton("x", this);
 
+        minimizeButton->setFixedSize(25, 23);
+        maximizeButton->setFixedSize(25, 23);
+        closeButton->setFixedSize(25, 23);
+
+        connect(minimizeButton, &QPushButton::clicked, this, &BrowserWindow::showMinimized);
+        connect(maximizeButton, &QPushButton::clicked, this, &BrowserWindow::toggleMaximized);
+        connect(closeButton, &QPushButton::clicked, this, &BrowserWindow::close);
+
+        // Layout for window controls
+        QHBoxLayout* windowControlLayout = new QHBoxLayout();
+        windowControlLayout->addWidget(minimizeButton);
+        windowControlLayout->addWidget(maximizeButton);
+        windowControlLayout->addWidget(closeButton);
+
+        // Layout for the tab bar and controls
+        QHBoxLayout* titleBarLayout = new QHBoxLayout();
+        titleBarLayout->addWidget(tabWidget);
+        titleBarLayout->addWidget(newTabButton);
+        titleBarLayout->addLayout(windowControlLayout);
+        titleBarLayout->setContentsMargins(0, 0, 0, 0);
+
+        // Create a widget to hold the title bar layout
+        QWidget* titleBarWidget = new QWidget(this);
+        titleBarWidget->setLayout(titleBarLayout);
+
+        // Set the custom title bar
+        setMenuWidget(titleBarWidget);
+
+        // Set the tab widget as the central widget
         setCentralWidget(tabWidget);
 
         // Add the initial tab
@@ -96,6 +133,17 @@ public:
         }
     }
 
+protected:
+    // Reimplement paintEvent to draw the custom window frame and background
+    void paintEvent(QPaintEvent* event) override {
+        Q_UNUSED(event);
+
+        QStyleOption opt;
+        opt.initFrom(this);
+        QPainter p(this);
+        style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    }
+
 private slots:
     QUrl UrlRefactor(std::string url) {
         std::string searchText = url;
@@ -114,6 +162,15 @@ private slots:
         }
 
         return QString::fromStdString(searchText);
+    }
+
+    void toggleMaximized() {
+        if (isMaximized()) {
+            showNormal();
+        }
+        else {
+            showMaximized();
+        }
     }
 
 private:

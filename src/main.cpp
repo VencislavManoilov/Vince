@@ -32,12 +32,8 @@ public:
         tabWidget = new QTabWidget(this);
         tabWidget->setMovable(true);
         tabWidget->setTabsClosable(true);
+        tabWidget->setElideMode(Qt::ElideRight); // To handle long tab titles
         connect(tabWidget, &QTabWidget::tabCloseRequested, this, &BrowserWindow::closeCurrentTab);
-
-        // Create the new tab button
-        QPushButton* newTabButton = new QPushButton("+", this);
-        newTabButton->setFixedSize(23, 23);
-        connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
 
         // Create window control buttons
         QPushButton* minimizeButton = new QPushButton("-", this);
@@ -52,17 +48,31 @@ public:
         connect(maximizeButton, &QPushButton::clicked, this, &BrowserWindow::toggleMaximized);
         connect(closeButton, &QPushButton::clicked, this, &BrowserWindow::close);
 
+        // Add the new tab button to the right side of the tab bar
+        QWidget* cornerWidget = new QWidget(this);
+        QHBoxLayout* cornerLayout = new QHBoxLayout(cornerWidget);
+        QPushButton* newTabButton = new QPushButton("+", this);
+        newTabButton->setFixedSize(23, 23);
+        connect(newTabButton, &QPushButton::clicked, this, &BrowserWindow::addNewTab);
+        cornerLayout->addWidget(newTabButton);
+        cornerLayout->setContentsMargins(0, 0, 0, 0);
+        tabWidget->setCornerWidget(cornerWidget, Qt::TopRightCorner);
+
         // Layout for window controls
         QHBoxLayout* windowControlLayout = new QHBoxLayout();
         windowControlLayout->addWidget(minimizeButton);
         windowControlLayout->addWidget(maximizeButton);
         windowControlLayout->addWidget(closeButton);
+        windowControlLayout->setContentsMargins(0, 0, 0, 0);
+
+        // Ensure the tab bar takes up most of the space
+        windowControlLayout->addStretch();
 
         // Layout for the tab bar and controls
         QHBoxLayout* titleBarLayout = new QHBoxLayout();
         titleBarLayout->addWidget(tabWidget);
-        titleBarLayout->addWidget(newTabButton);
         titleBarLayout->addLayout(windowControlLayout);
+        titleBarLayout->setSpacing(0);
         titleBarLayout->setContentsMargins(0, 0, 0, 0);
 
         // Create a widget to hold the title bar layout
@@ -72,11 +82,15 @@ public:
         // Set the custom title bar
         setMenuWidget(titleBarWidget);
 
-        // Set the tab widget as the central widget
-        setCentralWidget(tabWidget);
-
-        // Add the initial tab
+        // Create initial tab
         addNewTab();
+
+        // Ensure the central widget is a blank container, so the web view can expand
+        QWidget* centralWidget = new QWidget(this);
+        QVBoxLayout* centralLayout = new QVBoxLayout(centralWidget);
+        centralLayout->addWidget(tabWidget);
+        centralLayout->setContentsMargins(0, 0, 0, 0);
+        setCentralWidget(centralWidget);
     }
 
     void addNewTab() {

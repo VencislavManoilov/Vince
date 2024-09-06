@@ -92,22 +92,17 @@ public:
         QWidget* tab = new QWidget;
         QVBoxLayout* layout = new QVBoxLayout(tab);
 
-        // Ensure no margins or spacing within the tab itself
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(0);
+        // Set top margin to 25px and no margins for the other sides
+        layout->setContentsMargins(0, 25, 0, 0); // 25px margin from the top
 
-        // Create the search bar with a fixed height and 25px margin from the top
+        // Create the search bar with a fixed height
         QLineEdit* searchBar = new QLineEdit(tab);
-        searchBar->setFixedHeight(25);  // Fixed height of the search bar
-
-        // Create a spacer at the top to push the search bar 25px below the window's top edge
-        QSpacerItem* topSpacer = new QSpacerItem(0, 25, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        searchBar->setFixedHeight(25);  // Fixed height for the search bar
 
         // Create the web view
         QWebEngineView* view = createWebView(this);
 
-        // Add the spacer, search bar, and web view to the layout
-        layout->addItem(topSpacer);  // 25px space at the top
+        // Add the search bar and the web view to the layout
         layout->addWidget(searchBar); // Search bar
         layout->addWidget(view);      // Web view takes the remaining space
 

@@ -58,7 +58,6 @@ public:
 
         // Layout for the tab bar and controls
         QHBoxLayout* titleBarLayout = new QHBoxLayout();
-
         titleBarLayout->addWidget(tabBar);             // Add the tab bar
         titleBarLayout->addStretch(1);                 // Add stretch to push buttons to the right
         titleBarLayout->addWidget(newTabButton);       // Add the "New Tab" button
@@ -72,19 +71,20 @@ public:
         QWidget* titleBarWidget = new QWidget(this);
         titleBarWidget->setLayout(titleBarLayout);
 
-        // Set the custom title bar
-        setMenuWidget(titleBarWidget);
+        // Set up a vertical layout that contains both the title bar and the web view
+        QVBoxLayout* mainLayout = new QVBoxLayout();
+        mainLayout->addWidget(titleBarWidget);         // Add the title bar to the main layout
+        mainLayout->addWidget(tabWidget);              // Add the tab widget below the title bar
+        mainLayout->setSpacing(0);                     // Set spacing to 0
+        mainLayout->setContentsMargins(0, 0, 0, 0);    // Set margins to 0
+
+        // Set the main layout as the central widget
+        QWidget* centralWidget = new QWidget(this);
+        centralWidget->setLayout(mainLayout);
+        setCentralWidget(centralWidget);
 
         // Create initial tab
         addNewTab();
-
-        // Ensure the central widget is a blank container, so the web view can expand
-        QWidget* centralWidget = new QWidget(this);
-        QVBoxLayout* centralLayout = new QVBoxLayout(centralWidget);
-        centralLayout->addWidget(tabWidget);
-        centralLayout->setContentsMargins(0, 0, 0, 0);
-
-        setCentralWidget(centralWidget);
     }
 
     void addNewTab() {
